@@ -9,6 +9,10 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// 引入省市区选择组件
+require('./components/SelectDistrict');
+require('./components/AddressesCreateAndEdit');
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

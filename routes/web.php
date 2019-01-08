@@ -19,4 +19,7 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('user/addresses', 'UserAddressesController@index')->name('user.addresses.index');
     Route::get('user/addresses/create', 'UserAddressesController@create')->name('user.addresses.create');
     Route::post('user/addresses', 'UserAddressesController@store')->name('user.addresses.store');
+    Route::get('user/addresses/{address}', 'UserAddressesController@edit')->name('user.addresses.edit');
+    Route::put('user/addresses/{address}', 'UserAddressesController@update')->name('user.addresses.update');
+    Route::delete('user/addresses/{address}', 'UserAddressesController@destroy')->name('user.addresses.destroy');
 });

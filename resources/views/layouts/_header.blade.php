@@ -27,6 +27,7 @@
             {{ Auth::user()->name }}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{{ route('products.favorites') }}">我的收藏</a>
             <a class="dropdown-item" href="{{ route('user.addresses.index') }}">收货地址</a>
             <a class="dropdown-item" id="logout" href="#"
                onclick="event.preventDefault();document.getElementById('logout-form').submit();">退出登录</a>

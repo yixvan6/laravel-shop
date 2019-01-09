@@ -53,11 +53,16 @@ class ProductsController extends Controller
 
         // 商品收藏状态
         $favored = false;
+        // 商品是否已加入购物车
+        $carted = false;
         if ($user = $request->user()) {
             $favored = boolval($user->favorites()->find($product->id));
+
+            $sku_ids = $product->skus->pluck('id')->toArray();
+            $carted = $user->cartItems()->whereIn('product_sku_id', $sku_ids)->exists();
         }
 
-        return view('products.show', compact('product', 'favored'));
+        return view('products.show', compact('product', 'favored', 'carted'));
     }
 
     public function favor(Request $request, Product $product)

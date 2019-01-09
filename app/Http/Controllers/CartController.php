@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\AddCartRequest;
 use App\Models\CartItem;
+use App\Models\ProductSku;
 
 class CartController extends Controller
 {
@@ -23,6 +24,20 @@ class CartController extends Controller
             $cart->productSku()->associate($sku_id);
             $cart->save();
         }
+
+        return [];
+    }
+
+    public function index()
+    {
+        $cartItems = \Auth::user()->cartItems()->with(['productSku.product'])->get();
+
+        return view('cart.index', compact('cartItems'));
+    }
+
+    public function remove(Request $request, ProductSku $sku)
+    {
+        $request->user()->cartItems()->where('product_sku_id', $sku->id)->delete();
 
         return [];
     }

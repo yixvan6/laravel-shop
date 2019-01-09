@@ -38,7 +38,11 @@
           @else
             <button class="btn btn-success btn-favor">❤ 收藏</button>
           @endif
-          <button class="btn btn-primary btn-add-to-cart">加入购物车</button>
+          @if ($carted)
+            <a class="btn btn-danger" role="button" href="{{ route('cart.index') }}">去购物车查看</a>
+          @else
+            <button class="btn btn-primary btn-add-to-cart">加入购物车</button>
+          @endif
         </div>
       </div>
     </div>

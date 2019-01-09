@@ -30,6 +30,8 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
 
     // 购物车操作
     Route::post('cart', 'CartController@add')->name('cart.add');
+    Route::get('cart', 'CartController@index')->name('cart.index');
+    Route::delete('cart/{sku}', 'CartController@remove')->name('cart.remove');
 });
 
 Route::redirect('/', '/products')->name('root');

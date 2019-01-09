@@ -42,4 +42,14 @@ class ProductsController extends Controller
 
         return view('products.index', compact('products', 'filters'));
     }
+
+    public function show(Request $request, Product $product)
+    {
+        // 检查商品是否上架
+        if (! $product->on_sale) {
+            throw new \Exception('商品未上架');
+        }
+
+        return view('products.show', compact('product'));
+    }
 }

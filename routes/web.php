@@ -22,6 +22,10 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::get('user/addresses/{address}', 'UserAddressesController@edit')->name('user.addresses.edit');
     Route::put('user/addresses/{address}', 'UserAddressesController@update')->name('user.addresses.update');
     Route::delete('user/addresses/{address}', 'UserAddressesController@destroy')->name('user.addresses.destroy');
+
+    // 收藏商品
+    Route::post('products/{product}/favorite', 'ProductsController@favor')->name('products.favor');
+    Route::delete('products/{product}/favorite', 'ProductsController@disfavor')->name('products.disfavor');
 });
 
 Route::redirect('/', '/products')->name('root');

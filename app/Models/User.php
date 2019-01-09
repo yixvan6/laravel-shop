@@ -33,4 +33,12 @@ class User extends Authenticatable implements MustVerifyEmailContract
     {
         return $this->hasMany(UserAddress::class);
     }
+
+    // 多对多，用户收藏
+    public function favorites()
+    {
+        return $this->belongsToMany(Product::class, 'user_favorites')
+            ->withTimestamps()
+            ->orderBy('user_favorites.created_at', 'desc');
+    }
 }

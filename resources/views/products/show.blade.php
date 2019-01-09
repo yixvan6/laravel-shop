@@ -102,6 +102,31 @@
           });
         });
     });
+    /* 添加购物车按钮事件 */
+    $('.btn-add-to-cart').click(function () {
+      axios.post('{{ route('cart.add') }}', {
+        sku_id: $('label.active input[name=skus]').val(),
+        amount: $('.cart_amount input').val(),
+      }).then(function () {
+        swal('加入购物车成功', '', 'success');
+      }, function (error) {
+        if (error.response.status === 401) {
+          swal('请先登录', '', 'error');
+        } else if (error.response.status === 422) {
+          // 状态码为 422 说明输入校验失败
+          var html = '<div>';
+          _.each(error.response.data.errors, function (errors) {
+            _.each(errors, function (error) {
+              html += error+'<br>';
+            })
+          });
+          html += '</div>';
+          swal({content: $(html)[0], icon: 'error'})
+        } else {
+          swal('系统错误', '', 'error');
+        }
+      });
+    });
   });
 </script>
 @stop

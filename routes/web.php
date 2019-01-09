@@ -11,7 +11,7 @@
 |
 */
 
-Route::get('/', 'PagesController@root')->name('root');
+Route::get('/', 'PagesController@root');
 
 Auth::routes(['verify' => true]);
 
@@ -23,3 +23,6 @@ Route::group(['middleware' => ['auth', 'verified']], function () {
     Route::put('user/addresses/{address}', 'UserAddressesController@update')->name('user.addresses.update');
     Route::delete('user/addresses/{address}', 'UserAddressesController@destroy')->name('user.addresses.destroy');
 });
+
+Route::redirect('/', '/products')->name('root');
+Route::get('products', 'ProductsController@index')->name('products.index');

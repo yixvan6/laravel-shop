@@ -52,8 +52,7 @@ class ProductsController extends Controller
     public function edit($id, Content $content)
     {
         return $content
-            ->header('Edit')
-            ->description('description')
+            ->header('编辑商品')
             ->body($this->form()->edit($id));
     }
 
@@ -66,8 +65,7 @@ class ProductsController extends Controller
     public function create(Content $content)
     {
         return $content
-            ->header('Create')
-            ->description('description')
+            ->header('新建商品')
             ->body($this->form());
     }
 
@@ -138,14 +136,28 @@ class ProductsController extends Controller
     {
         $form = new Form(new Product);
 
-        $form->text('title', 'Title');
-        $form->textarea('description', 'Description');
-        $form->image('image', 'Image');
-        $form->switch('on_sale', 'On sale')->default(1);
-        $form->decimal('rating', 'Rating')->default(5.00);
-        $form->number('sold_count', 'Sold count');
-        $form->number('review_count', 'Review count');
-        $form->decimal('price', 'Price');
+        $form->tab('商品', function ($form) {
+            $form->text('title', '商品名称')->rules('required');
+            $form->image('image', '封面图片')->rules('required|image');
+            $form->editor('description', '商品描述')->rules('required');
+            $form->switch('on_sale', '上架？')->states([
+                'on' => ['value' => 1, 'text' => '是'],
+                'off' => ['value' => 0, 'text' => '否', 'color' => 'danger'],
+            ])->default(1);
+        })->tab('SKU 列表', function ($form) {
+            // 直接添加一对多关联模型
+            $form->hasMany('skus', function (Form\NestedForm $form) {
+                $form->text('title', 'SKU 名称')->rules('required');
+                $form->text('description', 'SKU 描述')->rules('required');
+                $form->text('price', '单价')->rules('required|numeric|min:0.01');
+                $form->number('stock', '库存')->min(0);
+            });
+        });
+
+        // 事件回调，当模型即将保存时触发
+        $form->saving(function (Form $form) {
+            $form->model()->price = collect($form->input('skus'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
+        });
 
         return $form;
     }

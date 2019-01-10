@@ -31,8 +31,9 @@ class CartController extends Controller
     public function index()
     {
         $cartItems = \Auth::user()->cartItems()->with(['productSku.product'])->get();
+        $addresses = \Auth::user()->addresses;
 
-        return view('cart.index', compact('cartItems'));
+        return view('cart.index', compact('cartItems', 'addresses'));
     }
 
     public function remove(Request $request, ProductSku $sku)

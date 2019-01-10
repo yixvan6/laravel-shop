@@ -31,7 +31,7 @@ class User extends Authenticatable implements MustVerifyEmailContract
 
     public function addresses()
     {
-        return $this->hasMany(UserAddress::class);
+        return $this->hasMany(UserAddress::class)->orderBy('last_used_at', 'desc');
     }
 
     // 多对多，用户收藏

@@ -68,4 +68,15 @@ class OrdersController extends Controller
 
         return $order;
     }
+
+    public function index()
+    {
+        $orders = Order::query()
+            ->where('user_id', \Auth::id())
+            ->with(['items.product', 'items.productSku'])
+            ->latest()
+            ->paginate();
+
+        return view('orders.index', compact('orders'));
+    }
 }

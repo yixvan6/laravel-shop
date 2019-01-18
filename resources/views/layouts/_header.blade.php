@@ -22,7 +22,12 @@
         <li class="nav-item"><a class="nav-link" href="{{ route('register') }}">注册</a></li>
         @else
         <li class="nav-item">
-          <a class="nav-link mt-1 mr-2" href="{{ route('cart.index') }}" title="查看购物车"><i class="fa fa-shopping-cart"></i></a>
+          <a class="nav-link mt-1 mr-1" href="{{ route('cart.index') }}" title="查看购物车">
+            <i class="fa fa-shopping-cart {{ \Auth::user()->cartItems->count() > 0 ? 'text-danger' : '' }}"></i>
+            @if (\Auth::user()->cartItems->count() > 0)
+            <span class="badge badge-pill badge-danger">{{ \Auth::user()->cartItems->count() }}</span>
+            @endif
+          </a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

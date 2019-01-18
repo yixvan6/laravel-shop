@@ -38,11 +38,7 @@
           @else
             <button class="btn btn-success btn-favor">❤ 收藏</button>
           @endif
-          @if ($carted)
-            <a class="btn btn-danger" role="button" href="{{ route('cart.index') }}">去购物车查看</a>
-          @else
-            <button class="btn btn-primary btn-add-to-cart">加入购物车</button>
-          @endif
+          <button class="btn btn-primary btn-add-to-cart">加入购物车</button>
         </div>
       </div>
     </div>
@@ -89,6 +85,8 @@
           // 若返回码为 401 代表未登录
           if (error.response && error.response.status === 401) {
             swal('请先登录', '', 'error');
+          } else if (error.response.status === 403) {
+            swal('请先验证邮箱', '', 'error');
           } else if (error.response && error.response.data.msg) {
             swal(error.response.data.msg, '', 'error');
           } else {
@@ -112,10 +110,14 @@
         sku_id: $('label.active input[name=skus]').val(),
         amount: $('.cart_amount input').val(),
       }).then(function () {
-        swal('加入购物车成功', '', 'success');
+        swal('加入购物车成功', '可到购物车查看和结算', 'success').then(function () {
+            location.reload();
+        });
       }, function (error) {
         if (error.response.status === 401) {
           swal('请先登录', '', 'error');
+        } else if (error.response.status === 403) {
+            swal('请先验证邮箱', '', 'error');
         } else if (error.response.status === 422) {
           // 状态码为 422 说明输入校验失败
           var html = '<div>';

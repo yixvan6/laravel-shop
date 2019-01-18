@@ -45,7 +45,7 @@ class AddCartRequest extends Request
     public function messages()
     {
         return [
-            'sku_id.required' => '请选择商品'
+            'sku_id.required' => '请选择商品类型'
         ];
     }
 }

@@ -146,7 +146,7 @@
       // 发送 ajax 请求
       axios.post('{{ route('orders.store') }}', req)
         .then(function (response) {
-          swal('订单提交成功', '', 'success').then(function () {
+          swal('订单提交成功', '', 'success').then(() => {
             location.href = '/orders/' + response.data.id;
           });
         }, function (error) {

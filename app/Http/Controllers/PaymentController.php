@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Exceptions\InvalidRequestException;
 use Carbon\Carbon;
+use Endroid\OrCode\QrCode;
 
 class PaymentController extends Controller
 {
@@ -58,5 +59,46 @@ class PaymentController extends Controller
         ]);
 
         return app('alipay')->success();
+    }
+
+    public function payByWechat(Order $order)
+    {
+        $this->authorize('own', $order);
+
+        if ($order->paid_at || $order->closed) {
+            throw new InvalidRequestException('订单状态不正确');
+        }
+
+        $res = app('wechat_pay')->scan([
+            'out_trade_no' => $order->no,
+            'total_fee' => $order->total_amount * 100,
+            'body' => '支付 Laravel Shop1 的订单：'.$order->no,
+        ]);
+
+        $qrCode = new QrCode($res->code_url);
+        // 将二维码图片数据以字符串形式输出，并带上相应的响应类型
+        return response($qrCode->writeString(), 200, ['Content-Type' => $qrCode->getContentType()]);
+    }
+
+    public function wechatNotify()
+    {
+        $data = app('wechat_pay')->verify();
+
+        $order = Order::where('no', $data->out_trade_no)->first();
+        if (! $order) {
+            return 'fail';
+        }
+
+        if ($order->paid_at) {
+            return app('wechat_pay')->success();
+        }
+
+        $order->update([
+            'paid_at' => Carbon::now(),
+            'payment_method' => 'wechat',
+            'payment_no' => $data->transaction_id,
+        ]);
+
+        return app('wechat_pay')->success();
     }
 }

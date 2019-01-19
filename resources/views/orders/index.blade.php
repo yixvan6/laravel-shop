@@ -63,6 +63,12 @@
                       </td>
                       <td rowspan="{{ count($order->items) }}" class="text-center">
                         <a class="btn btn-primary btn-sm" href="{{ route('orders.show', $order->id) }}">查看订单</a>
+                        {{-- 评论入口，只有收到货才能评论 --}}
+                        @if ($order->ship_status === \App\Models\Order::SHIP_STATUS_RECEIVED)
+                        <a class="btn btn-success btn-sm" href="{{ route('orders.review.show', $order->id) }}">
+                        {{ $order->reviewed ? '查看评价' : '立即评价' }}
+                        </a>
+                        @endif
                       </td>
                     @endif
                   </tr>

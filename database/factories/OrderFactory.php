@@ -1,8 +1,11 @@
 <?php
 
 use Faker\Generator as Faker;
+use App\Models\User;
+use App\Models\Order;
+use App\Models\CouponCode;
 
-$factory->define(App\Models\Order::class, function (Faker $faker) {
+$factory->define(Order::class, function (Faker $faker) {
     $user = User::query()->inRandomOrder()->first();
     $address = $user->addresses()->inRandomOrder()->first();
 

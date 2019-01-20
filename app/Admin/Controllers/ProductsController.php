@@ -87,6 +87,15 @@ class ProductsController extends Controller
         $grid->rating('评分');
         $grid->sold_count('销量');
         $grid->review_count('评论数');
+        // 一对多关系展示
+        $grid->skus()->display(function ($skus) {
+            $titles = array_map(function ($sku) {
+                return "<span class='label label-warning'>{$sku['title']}</span>";
+            }, $skus);
+            return join(' | ', $titles);
+        });
+
+        $grid->created_at('创建于');
 
         $grid->actions(function ($actions) {
             $actions->disableView();

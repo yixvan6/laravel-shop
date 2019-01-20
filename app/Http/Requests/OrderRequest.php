@@ -45,4 +45,13 @@ class OrderRequest extends Request
             'items.*.amount' => 'required|integer|min:1',
         ];
     }
+
+    public function attributes()
+    {
+        return [
+            'address_id' => '收货地址',
+            'items' => '购物车商品',
+            'items.*.amount' => '商品数量',
+        ];
+    }
 }

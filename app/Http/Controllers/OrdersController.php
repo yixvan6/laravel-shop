@@ -11,14 +11,22 @@ use Carbon\Carbon;
 use App\Http\Requests\ReviewRequest;
 use App\Events\OrderReviewed;
 use App\Http\Requests\ApplyRefundRequest;
+use App\Models\CouponCode;
+use App\Exceptions\CouponUnavailableException;
 
 class OrdersController extends Controller
 {
     public function store(OrderRequest $request, OrderService $orderService)
     {
         $address = UserAddress::find($request->address_id);
+        $coupon = null;
+        if ($code = $request->coupon_code) {
+            if (! $coupon = CouponCode::where('code', $code)->first()) {
+                throw new CouponUnavailableException('优惠券不存在');
+            }
+        }
 
-        return $orderService->store($address, $request->remark, $request->items);
+        return $orderService->store($address, $request->remark, $request->items, $coupon);
     }
 
     public function index()

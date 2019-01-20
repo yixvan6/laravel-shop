@@ -134,6 +134,7 @@
         address_id: $('#order-form').find('select[name=address]').val(),
         remark: $('#order-form').find('textarea[name=remark]').val(),
         items: [],
+        coupon_code: $('input[name=coupon_code]').val(),
       };
       // 遍历所有带 data-id 属性的 tr 标签，也就是购物车中的每个商品
       $('table tr[data-id]').each(function () {
@@ -171,6 +172,8 @@
             });
             html += '</div>';
             swal({content: $(html)[0], icon: 'error'})
+          } else if (error.response.data.msg) {
+            swal(error.response.data.msg, '', 'error');
           } else {
             swal('系统错误', '', 'error');
           }

@@ -9,15 +9,21 @@ use App\Jobs\CloseOrder;
 use Carbon\Carbon;
 use App\Exceptions\InvalidRequestException;
 use App\Services\CartService;
+use App\Models\CouponCode;
+use App\Exceptions\CouponUnavailableException;
 
 class OrderService
 {
-    public function store(UserAddress $address, $remark, $items)
+    public function store(UserAddress $address, $remark, $items, $coupon = null)
     {
         $user = \Auth::user();
 
+        if ($coupon) {
+            $coupon->check();
+        }
+
         // 开启一个数据库事务
-        $order = \DB::transaction(function () use ($user, $address, $remark, $items) {
+        $order = \DB::transaction(function () use ($user, $address, $remark, $items, $coupon) {
             $address->update(['last_used_at' => Carbon::now()]);
             // 创建一个订单
             $order = new Order([
@@ -49,6 +55,14 @@ class OrderService
                 // 减去对应商品的库存量
                 if ($sku->decreaseStock($data['amount']) <= 0) {
                     throw new InvalidRequestException('该商品库存不足');
+                }
+            }
+            if ($coupon) {
+                $coupon->check($total_amount);
+                $total_amount = $coupon->getAdjustedPrice($total_amount);
+                $order->couponCode()->associate($coupon);
+                if ($coupon->changeUsed() <= 0) {
+                    throw new CouponUnavailableException('优惠券已被兑完');
                 }
             }
 

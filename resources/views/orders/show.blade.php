@@ -69,6 +69,13 @@
         @endif
       </div>
       <div class="order-summary text-right">
+        <!-- 展示优惠信息开始 -->
+        @if ($order->couponCode)
+        <div class="text-primary">
+          <span>优惠信息：{{ $order->couponCode->description }}</span>
+          <div class="value">已优惠：{{ $order->couponCode->type == \App\Models\CouponCode::TYPE_FIXED ? $order->couponCode->value : $order->total_amount * $order->couponCode->value / (100 - $order->couponCode->value) }} 元</div>
+        </div>
+        @endif
         <div class="total-amount">
           <span>订单总价：</span>
           <div class="value">￥{{ $order->total_amount }}</div>

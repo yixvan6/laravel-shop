@@ -19,7 +19,7 @@ class OrderService
         $user = \Auth::user();
 
         if ($coupon) {
-            $coupon->check();
+            $coupon->check($user);
         }
 
         // 开启一个数据库事务
@@ -58,7 +58,7 @@ class OrderService
                 }
             }
             if ($coupon) {
-                $coupon->check($total_amount);
+                $coupon->check($user, $total_amount);
                 $total_amount = $coupon->getAdjustedPrice($total_amount);
                 $order->couponCode()->associate($coupon);
                 if ($coupon->changeUsed() <= 0) {
